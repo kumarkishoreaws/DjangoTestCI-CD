@@ -15,7 +15,7 @@ pipeline {
   environment {
     APP_NAME        = 'conduit'           // CHANGE if needed
     EC2_USER        = 'ubuntu'            // CHANGE: EC2 username
-    EC2_HOST        = '3.89.119.30' // CHANGE: EC2 public DNS
+    EC2_HOST        = '3.90.36.247' // CHANGE: EC2 public DNS
     DEPLOY_DIR      = '/home/ubuntu/app'  // CHANGE: path on EC2 where code will be deployed
     // GIT_COMMIT_SHORT will be set at runtime
   }
