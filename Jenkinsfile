@@ -135,7 +135,7 @@ pipeline {
           echo "Starting Django development server..."
           # Optional: run in background for testing (will serve on port 8000)
           nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
-          EOF
+EOF
         }
       }
     }
