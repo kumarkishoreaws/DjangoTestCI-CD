@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image '<your-dockerhub-username>/ci-agent:latest'
+      image 'kichu2320/ephemeral-agent'
       args '-v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
@@ -119,7 +119,7 @@ pipeline {
         rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
 
         # Run remote commands (install deps, migrate)
-        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << EOF
           cd ${DEPLOY_DIR}
           
 		  echo "creating env "
@@ -135,7 +135,7 @@ pipeline {
           echo "Starting Django development server..."
           # Optional: run in background for testing (will serve on port 8000)
           nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
-        EOF
+          EOF
         }
       }
     }
