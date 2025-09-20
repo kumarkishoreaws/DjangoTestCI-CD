@@ -122,8 +122,8 @@ pipeline {
         ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
           cd ${DEPLOY_DIR}
           
-		  echo "creating env "
-          source venv/bin/activate		  
+          echo "creating env "
+          source venv/bin/activate        
           echo "Installing requirements on EC2..."
           if [ -f requirements.txt ]; then
             pip3 install --no-cache-dir -r requirements.txt
