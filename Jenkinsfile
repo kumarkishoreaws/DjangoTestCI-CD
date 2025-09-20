@@ -111,7 +111,7 @@ pipeline {
     stage('Deploy to EC2') {
       steps {
         sshagent (credentials: ['123']) {   // Jenkins credential with your EC2 private key
-          sh '''
+          sh """
            set -e
         echo "Deploying to EC2: ${EC2_HOST}"
         
@@ -119,7 +119,7 @@ pipeline {
         rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
 
         # Run remote commands (install deps, migrate)
-        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << EOF
+        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
           cd ${DEPLOY_DIR}
           
 		  echo "creating env "
@@ -135,7 +135,7 @@ pipeline {
           echo "Starting Django development server..."
           # Optional: run in background for testing (will serve on port 8000)
           nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
-EOF
+ENDSSH
         }
       }
     }
