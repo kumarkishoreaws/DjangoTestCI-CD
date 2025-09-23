@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'kichu2320/ephemeral-agent:V1'
+            image 'kichu2320/ephemeral-image:V1'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
