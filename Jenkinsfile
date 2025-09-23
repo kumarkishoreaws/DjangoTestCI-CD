@@ -23,6 +23,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
+                sh "git config --global --add safe.directory $WORKSPACE"
                 checkout scm
                 script {
                     env.GIT_COMMIT_SHORT = sh(
