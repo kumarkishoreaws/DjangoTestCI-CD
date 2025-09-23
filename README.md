@@ -24,6 +24,3 @@ If your command line prompt does not start with `(productionready)` at this poin
 If pyenv is still not working, visit us in the Thinkster Slack channel so we can help you out.
 
 
-
-
-
