@@ -100,7 +100,7 @@ pipeline {
         stage('Unit Tests & Coverage') {
             steps {
                 sh '''
-                   // set -e
+                   
                     mkdir -p reports htmlcov
                     pytest --junitxml=reports/junit.xml --cov=. --cov-report=html:htmlcov || true
                 '''
