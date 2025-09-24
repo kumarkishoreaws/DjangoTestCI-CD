@@ -15,7 +15,7 @@ pipeline {
     environment {
         APP_NAME   = 'conduit'
         EC2_USER   = 'ubuntu'
-        EC2_HOST   = '3.90.36.247'
+        EC2_HOST   = '98.84.127.217'
         DEPLOY_DIR = '/home/ubuntu/app'
     }
 
@@ -63,34 +63,39 @@ pipeline {
         }
 
         stage('Static Analysis') {
-            steps {
-                sh '''
-                    set -e
-                    mkdir -p reports
-                    echo "Running flake8..."
-                    flake8 . --exit-zero --output-file=reports/flake8.txt || true
-                    echo "Running pylint..."
-                    PY_FILES=$(git ls-files '*.py' || true)
-                    if [ -n "$PY_FILES" ]; then
-                        pylint $PY_FILES > reports/pylint.txt || true
-                    else
-                        echo "No python files found for pylint" > reports/pylint.txt
-                    fi
-                    echo "Running bandit..."
-                    bandit -r . -f json -o reports/bandit.json || true
-                '''
-                recordIssues tools: [
-                    flake8(pattern: 'reports/flake8.txt'),
-                    pylint(pattern: 'reports/pylint.txt'),
-                    bandit(pattern: 'reports/bandit.json')
-                ]
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
-                }
-            }
+    steps {
+        sh '''
+            mkdir -p reports
+
+            echo "Running flake8..."
+            flake8 . --exit-zero --output-file=reports/flake8.txt || true
+
+            echo "Running pylint..."
+            PY_FILES=$(git ls-files '*.py' || true)
+            if [ -n "$PY_FILES" ]; then
+                pylint $PY_FILES --output-format=text > reports/pylint.txt || true
+            else
+                echo "No python files found for pylint" > reports/pylint.txt
+            fi
+
+            echo "Running bandit..."
+            bandit -r . -f json -o reports/bandit.json || true
+        '''
+        
+        // Collect issues with Warnings Next Generation plugin
+        recordIssues tools: [
+            flake8(pattern: 'reports/flake8.txt'),
+            pylint(pattern: 'reports/pylint.txt'),
+            bandit(pattern: 'reports/bandit.json')
+        ]
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
         }
+    }
+}
 
         stage('Unit Tests & Coverage') {
             steps {
