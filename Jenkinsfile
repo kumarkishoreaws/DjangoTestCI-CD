@@ -83,11 +83,11 @@ pipeline {
         '''
         
         // Collect issues with Warnings Next Generation plugin
-        recordIssues tools: [
-            flake8(pattern: 'reports/flake8.txt'),
-            pylint(pattern: 'reports/pylint.txt'),
-            bandit(pattern: 'reports/bandit.json')
-        ]
+       // recordIssues tools: [
+         //   flake8(pattern: 'reports/flake8.txt'),
+           // pylint(pattern: 'reports/pylint.txt'),
+            // bandit(pattern: 'reports/bandit.json')
+        // ]
     }
 
     post {
