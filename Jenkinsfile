@@ -15,7 +15,7 @@ pipeline {
     environment {
         APP_NAME   = 'conduit'
         EC2_USER   = 'ubuntu'
-        EC2_HOST   = '98.84.127.217'
+        EC2_HOST   = '52.90.147.237'
         DEPLOY_DIR = '/home/ubuntu/app'
     }
 
@@ -121,6 +121,11 @@ pipeline {
         }
 
         stage('Deploy to EC2') {
+        agent {
+        docker {
+            image 'kichu2320/ephemeral-agent-cd-image:V1'
+        }
+    }
             steps {
                 sshagent(credentials: ['123']) {
                     sh """
