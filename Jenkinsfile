@@ -124,7 +124,7 @@ pipeline {
         agent {
         docker {
             image 'kichu2320/cd-image:V1'
-            args '-u 0:0 --entrypoint=""'
+            args '-u 0:0'
         }
     }
             steps {
