@@ -123,7 +123,7 @@ pipeline {
         stage('Deploy to EC2') {
         agent {
         docker {
-            image 'kichu2320/ephemeral-agent-cd-image:V1'
+            image 'kichu2320/ephemeral-cd-image:V1'
             args '-u 0:0'
         }
     }
