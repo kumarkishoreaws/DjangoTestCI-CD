@@ -128,14 +128,15 @@ pipeline {
         }
     }
     steps {
+          dir("${WORKSPACE}") { 
         sshagent(credentials: ['123']) {
             // Make deploy.sh executable and then run it
             sh 'chmod +x ./deploy.sh'
             sh './deploy.sh'
         }
-    }
- }
-
+      }
+   }
+}
 
     } // stages
 
