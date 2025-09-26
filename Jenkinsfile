@@ -129,36 +129,31 @@ pipeline {
     }
     steps {
          sshagent(credentials: ['123']) {
-            sh '''
-                echo "Deploying to EC2: ${EC2_HOST}"
- 
-                # Ensure .ssh folder exists
-                mkdir -p ~/.ssh
-                chmod 700 ~/.ssh
+            sh """
+        echo "Deploying to EC2: ${EC2_HOST}"
 
-                # Add EC2 host to known_hosts
-                ssh-keyscan -H ${EC2_HOST} > ~/.ssh/known_hosts
-                chmod 644 ~/.ssh/known_hosts
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
+        chmod 644 ~/.ssh/known_hosts
 
- 
-                rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
+        rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
 
-                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << "ENDSSH"
-                    cd ${DEPLOY_DIR}
-                    echo "Activating virtual environment..."
-                    [ ! -d venv ] && python3 -m venv venv
-                    source venv/bin/activate
-                    if [ -f requirements.txt ]; then
-                        pip3 install --no-cache-dir -r requirements.txt
-                    fi
-                    echo "Applying Django migrations..."
-                    python3 manage.py migrate --noinput || true
-                    echo "Starting Django server..."
-                    pkill -f "manage.py runserver" || true
-                    nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
-                ENDSSH
-                 
-            '''
+        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<EOF
+cd ${DEPLOY_DIR}
+echo "Activating virtual environment..."
+[ ! -d venv ] && python3 -m venv venv
+source venv/bin/activate
+if [ -f requirements.txt ]; then
+    pip3 install --no-cache-dir -r requirements.txt
+fi
+echo "Applying Django migrations..."
+python3 manage.py migrate --noinput || true
+echo "Starting Django server..."
+pkill -f "manage.py runserver" || true
+nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
+EOF
+    """
         }
    } 
 }
