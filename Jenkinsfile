@@ -137,7 +137,7 @@ pipeline {
                 chmod 700 ~/.ssh
 
                 # Add EC2 host to known_hosts
-                ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
+                ssh-keyscan -H ${EC2_HOST} > ~/.ssh/known_hosts
                 chmod 644 ~/.ssh/known_hosts
 
  
@@ -146,6 +146,7 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
                     cd ${DEPLOY_DIR}
                     echo "Activating virtual environment..."
+                    [ ! -d venv ] && python3 -m venv venv
                     source venv/bin/activate
                     if [ -f requirements.txt ]; then
                         pip3 install --no-cache-dir -r requirements.txt
@@ -153,6 +154,7 @@ pipeline {
                     echo "Applying Django migrations..."
                     python3 manage.py migrate --noinput || true
                     echo "Starting Django server..."
+                    pkill -f "manage.py runserver" || true
                     nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
                 ENDSSH
                  
