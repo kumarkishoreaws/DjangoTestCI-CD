@@ -128,6 +128,7 @@ pipeline {
         }
     }
     steps {
+        sh "git config --global --add safe.directory $WORKSPACE"
         sshagent(credentials: ['123']) {
             sh '''
                 echo "Deploying to EC2: ${EC2_HOST}"
