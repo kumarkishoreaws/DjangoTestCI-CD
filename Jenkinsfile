@@ -120,7 +120,7 @@ pipeline {
             }
         }
 
-       stage('Deploy to EC2') {
+      stage('Deploy to EC2') {
     agent {
         docker {
             image 'kichu2320/cd-image:V1'
@@ -128,13 +128,29 @@ pipeline {
         }
     }
     steps {
-          dir("${WORKSPACE}") { 
         sshagent(credentials: ['123']) {
-            sh './deploy.sh'
+            sh '''
+                echo "Deploying to EC2: ${EC2_HOST}"
+
+                rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
+
+                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
+                    cd ${DEPLOY_DIR}
+                    echo "Activating virtual environment..."
+                    source venv/bin/activate
+                    if [ -f requirements.txt ]; then
+                        pip3 install --no-cache-dir -r requirements.txt
+                    fi
+                    echo "Applying Django migrations..."
+                    python3 manage.py migrate --noinput || true
+                    echo "Starting Django server..."
+                    nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
+                ENDSSH
+            '''
         }
-      }
-   }
+    }
 }
+
 
     } // stages
 
