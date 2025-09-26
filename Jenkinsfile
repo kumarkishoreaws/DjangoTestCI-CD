@@ -150,7 +150,7 @@ pipeline {
                  sh 'whoami; pwd; ls -la'
             '''
         }
-    }
+   // } 
 }
 
 
