@@ -15,7 +15,7 @@ pipeline {
     environment {
         APP_NAME   = 'conduit'
         EC2_USER   = 'ubuntu'
-        EC2_HOST   = '34.204.15.228'
+        EC2_HOST   = '54.226.77.122'
         DEPLOY_DIR = '/home/ubuntu/app'
     }
 
