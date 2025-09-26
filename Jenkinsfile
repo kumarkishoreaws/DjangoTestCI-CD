@@ -143,7 +143,7 @@ pipeline {
  
                 rsync -avz --delete ./ ${EC2_USER}@${EC2_HOST}:${DEPLOY_DIR}
 
-                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'ENDSSH'
+                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << "ENDSSH"
                     cd ${DEPLOY_DIR}
                     echo "Activating virtual environment..."
                     [ ! -d venv ] && python3 -m venv venv
