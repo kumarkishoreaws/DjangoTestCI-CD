@@ -121,18 +121,13 @@ pipeline {
         }
 
       stage('Deploy to EC2') {
-        environment {
-        TMPDIR = '/tmp'
-    }
     agent {
         docker {
             image 'kichu2320/cd-image:V1'
-            args "-u 1000:1000 -v ${env.WORKSPACE}:/workspace -w /workspace"
-
+            reuseNode true
         }
     }
     steps {
-        sh "git config --global --add safe.directory $WORKSPACE"
         // sshagent(credentials: ['123']) {
             sh '''
               #  echo "Deploying to EC2: ${EC2_HOST}"
