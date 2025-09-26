@@ -121,10 +121,13 @@ pipeline {
         }
 
       stage('Deploy to EC2') {
+        environment {
+        TMPDIR = '/tmp'
+    }
     agent {
         docker {
             image 'kichu2320/cd-image:V1'
-            args '-u 0:0 -v $WORKSPACE:/workspace -w /workspace'
+             args '-v $WORKSPACE:/workspace -w /workspace'
         }
     }
     steps {
@@ -147,7 +150,7 @@ pipeline {
                  #   echo "Starting Django server..."
                 #    nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
                # ENDSSH
-                 sh 'whoami; pwd; ls -la'
+                  'whoami; pwd; ls -la'
             '''
         }
    // } 
