@@ -127,7 +127,8 @@ pipeline {
     agent {
         docker {
             image 'kichu2320/cd-image:V1'
-             args '-v $WORKSPACE:/workspace -w /workspace'
+            args "-u 1000:1000 -v ${env.WORKSPACE}:/workspace -w /workspace"
+
         }
     }
     steps {
@@ -150,7 +151,11 @@ pipeline {
                  #   echo "Starting Django server..."
                 #    nohup python3 manage.py runserver 0.0.0.0:8000 &> django.log &
                # ENDSSH
-                  'whoami; pwd; ls -la'
+                  set -x
+                  whoami
+                  pwd
+                  ls -la
+                  echo "ENV: $(env)"
             '''
         }
    // } 
